@@ -1,0 +1,18 @@
+// myprog.nova — example program for testing custom filename
+x = 100;
+y = 42;
+print(x - y);
+print(x * 2);
+print("NovaLang works!");
+
+if (x > y) {
+    print(1);
+} else {
+    print(0);
+}
+
+i = 1;
+while (i < 4) {
+    print(i);
+    i = i + 1;
+}

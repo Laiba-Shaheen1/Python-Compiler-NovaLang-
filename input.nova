@@ -1,0 +1,49 @@
+// NovaLang — sample program demonstrating all features
+
+// Integer arithmetic
+a = 5;
+b = 10;
+print(a + b);        // 15
+print(a * b);        // 50
+print(b - a);        // 5
+print(b / a);        // 2
+print(b % 3);        // 1
+
+// Floating-point
+x = 3.14;
+print(x);            // 3.140000
+
+// Unary minus
+neg = -7;
+print(neg);          // -7
+
+// String literal
+print("Hello, NovaLang!");
+
+// Boolean
+flag = true;
+print(flag);         // true
+
+// Comparison and if-else
+if (a < b) {
+    print(a);
+} else {
+    print(b);
+}
+
+// If without else
+if (a == 5) {
+    print(a);
+}
+
+// Logical operators
+if (a < b && b == 10) {
+    print(1);
+}
+
+// While loop — count from 1 to 3
+i = 1;
+while (i < 4) {
+    print(i);
+    i = i + 1;
+}
