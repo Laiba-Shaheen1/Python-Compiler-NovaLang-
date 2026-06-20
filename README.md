@@ -1,112 +1,129 @@
-# NovaLang ⬡
+<div align="center">
 
-A compiled programming language with its own lexer, parser, AST, and LLVM IR backend — written entirely in Python.
+# ⬡ NovaLang
 
-NovaLang compiles `.nova` source files down to **LLVM IR**, the same intermediate representation used by Clang/C++, Rust, and Swift. Programs can be run instantly via JIT or compiled to a native executable.
+**A compiled programming language with its own lexer, parser, AST, and LLVM IR backend — written entirely in Python.**
 
----
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![LLVM](https://img.shields.io/badge/LLVM-IR-orange?logo=llvm&logoColor=white)](https://llvm.org/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![rply](https://img.shields.io/badge/rply-lexer%2Fparser-purple)](https://github.com/alex/rply)
+[![llvmlite](https://img.shields.io/badge/llvmlite-codegen-yellow)](https://github.com/numba/llvmlite)
 
-## Table of Contents
+NovaLang compiles `.nova` source files down to **LLVM IR** — the same intermediate representation used by Clang/C++, Rust, and Swift. Programs run instantly via JIT or compile to a native executable.
 
-- [Features](#features)
-- [Project Structure](#project-structure)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Language Reference](#language-reference)
-- [The IDE](#the-ide)
-- [How It Works](#how-it-works)
-- [Known Limitations](#known-limitations)
-- [Roadmap](#roadmap)
-- [License](#license)
+</div>
 
 ---
 
-## Features
+## 📑 Table of Contents
 
-- **Data types** — integer, float, boolean, string
-- **Arithmetic** — `+ - * / %` and unary minus
-- **Comparison** — `== != > < >= <=`
-- **Logical operators** — `&& || !`
-- **Control flow** — `if`, `if / else`, `while` loops
-- **I/O** — `print()` for all supported types
-- **Comments** — `// single-line` and `/* multi-line */`
-- **Variable re-assignment**
-- **JIT execution** — run programs instantly, no separate LLVM install required
-- **GUI IDE** — dark/light themed editor with syntax highlighting, error line markers, and an examples gallery
+- [Features](#-features)
+- [Project Structure](#-project-structure)
+- [Requirements](#-requirements)
+- [Quick Start](#-quick-start)
+- [Usage](#-usage)
+- [Language Reference](#-language-reference)
+- [The IDE](#-the-ide)
+- [How It Works](#-how-it-works)
+- [Known Limitations](#-known-limitations)
+- [Roadmap](#-roadmap)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 ---
 
-## Project Structure
+## ✨ Features
+
+- 🔢 **Data types** — integer, float, boolean, string
+- ➕ **Arithmetic** — `+ - * / %` and unary minus
+- 🔍 **Comparison** — `== != > < >= <=`
+- 🔗 **Logical operators** — `&& || !`
+- 🔁 **Control flow** — `if`, `if / else`, `while` loops
+- 🖨️ **I/O** — `print()` for all supported types
+- 💬 **Comments** — `// single-line` and `/* multi-line */`
+- ♻️ **Variable re-assignment**
+- ⚡ **JIT execution** — run programs instantly, no separate LLVM install required
+- 🖥️ **GUI IDE** — dark/light themed editor with syntax highlighting, error markers, and an examples gallery
+
+---
+
+## 📁 Project Structure
+
+```
+NovaLang/
+├── lexer.py         # Tokenizer (rply)
+├── nova_parser.py   # Grammar + AST builder (rply)
+├── nova_ast.py       # AST nodes — emit LLVM IR via .eval()
+├── codegen.py        # LLVM module setup (llvmlite)
+├── main.py           # CLI compiler entry point
+├── Ide.py            # GUI IDE (tkinter)
+├── input.nova        # Sample program
+└── README.md
+```
 
 | File | Role | Description |
 |---|---|---|
-| `lexer.py` | Tokenizer | Converts source text into a token stream using `rply` |
-| `nova_parser.py` | Grammar + AST | Defines grammar rules and builds AST node objects |
+| `lexer.py` | Tokenizer | Converts source text into a token stream |
+| `nova_parser.py` | Grammar + AST | Defines grammar rules, builds AST node objects |
 | `nova_ast.py` | IR Emitter | Each AST node class emits LLVM IR via `.eval()` |
-| `codegen.py` | LLVM Module | Sets up the LLVM module, declares `printf`, verifies and saves `output.ll` |
-| `main.py` | CLI Compiler | Drives lexer → parser → eval, handles `--run` flag and errors |
-| `Ide.py` | GUI IDE | Full tkinter IDE — editor, console, syntax highlighting, themes |
-| `input.nova` | Sample program | Default source file compiled by `main.py` |
+| `codegen.py` | LLVM Module | Sets up the module, declares `printf`, verifies & saves IR |
+| `main.py` | CLI Compiler | Drives lexer → parser → eval, handles `--run` and errors |
+| `Ide.py` | GUI IDE | Full tkinter IDE — editor, console, syntax highlighting |
 
 ---
 
-## Requirements
-
-### Python packages
+## 📦 Requirements
 
 ```bash
 pip install rply llvmlite
 ```
 
-### Optional (for native `.exe` compilation only)
+<details>
+<summary><b>Optional — native <code>.exe</code> compilation</b></summary>
+<br>
+
+You don't need these to run NovaLang — `--run` JIT-executes programs directly in Python. They're only needed if you want to compile to a standalone native executable:
 
 | Tool | Purpose |
 |---|---|
-| LLVM (`clang`, `llc`) | Compile IR to native assembly/executables |
-| Visual Studio Build Tools (Windows) | Provides `libcmt.lib` / `kernel32.lib` needed by the linker |
+| [LLVM](https://github.com/llvm/llvm-project/releases) (`clang`, `llc`) | Compile IR to native assembly/executables |
+| Visual Studio Build Tools (Windows) | Provides `libcmt.lib` / `kernel32.lib` for the linker |
 
-> You do **not** need Flex, Bison, or any C/C++ toolchain to run NovaLang — `rply` handles lexing and parsing entirely in Python, and the `--run` flag JIT-executes programs directly.
+</details>
 
 ---
 
-## Installation
+## 🚀 Quick Start
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/<your-username>/NovaLang.git
 cd NovaLang
 pip install rply llvmlite
-```
 
----
-
-## Usage
-
-### Compile and run with JIT (recommended)
-
-```bash
+# Compile and run instantly
 python main.py input.nova --run
 ```
 
-### Compile only (writes LLVM IR to a file)
+---
+
+## 🛠 Usage
 
 ```bash
+# Compile and run with JIT (recommended)
+python main.py input.nova --run
+
+# Compile only (writes LLVM IR to a file)
 python main.py input.nova -o output.ll
-```
 
-### Use a custom source file
-
-```bash
+# Use a custom source file
 python main.py myprogram.nova --run
-```
 
-### Launch the GUI IDE
-
-```bash
+# Launch the GUI IDE
 python Ide.py
 ```
 
-### CLI options
+### CLI Flags
 
 | Flag | Description |
 |---|---|
@@ -117,9 +134,11 @@ python Ide.py
 
 ---
 
-## Language Reference
+## 📖 Language Reference
 
-### Types
+<details>
+<summary><b>Types</b></summary>
+<br>
 
 ```nova
 42          // integer
@@ -128,15 +147,21 @@ true        // boolean
 false       // boolean
 "hello"     // string
 ```
+</details>
 
-### Variables
+<details>
+<summary><b>Variables</b></summary>
+<br>
 
 ```nova
 x = 10;
 x = x + 1;   // re-assignment supported
 ```
+</details>
 
-### Operators
+<details>
+<summary><b>Operators</b></summary>
+<br>
 
 | Category | Operators |
 |---|---|
@@ -144,17 +169,11 @@ x = x + 1;   // re-assignment supported
 | Unary | `-x` |
 | Comparison | `==` `!=` `>` `<` `>=` `<=` |
 | Logical | `&&` `\|\|` `!` |
+</details>
 
-### Print
-
-```nova
-print(42);
-print(3.14);
-print("Hello, NovaLang!");
-print(true);
-```
-
-### If / Else
+<details>
+<summary><b>Control Flow</b></summary>
+<br>
 
 ```nova
 if (x > 10) {
@@ -167,27 +186,19 @@ if (x > 10) {
 if (x == 5) {
     print(x);
 }
-```
 
-### While Loop
-
-```nova
+// while loop
 i = 1;
 while (i < 5) {
     print(i);
     i = i + 1;
 }
 ```
+</details>
 
-### Comments
-
-```nova
-// single-line comment
-/* multi-line
-   comment */
-```
-
-### Example — FizzBuzz
+<details>
+<summary><b>Example — FizzBuzz</b></summary>
+<br>
 
 ```nova
 n = 1;
@@ -208,12 +219,11 @@ while (n <= 15) {
     n = n + 1;
 }
 ```
+</details>
 
 ---
 
-## The IDE
-
-Run with:
+## 🖥 The IDE
 
 ```bash
 python Ide.py
@@ -222,13 +232,11 @@ python Ide.py
 | Feature | Description |
 |---|---|
 | Syntax highlighting | Keywords, strings, numbers, operators, comments |
-| Dark / light theme | Toggle with `Ctrl+T`, preference saved between sessions |
-| Error highlighting | Failing lines marked in red with line-specific messages |
-| Examples gallery | 6 built-in programs (`Ctrl+E`) |
-| Console / LLVM IR tabs | View program output or the generated IR side by side |
+| Dark / light theme | `Ctrl+T` — preference saved between sessions |
+| Error highlighting | Failing lines marked in red with messages |
+| Examples gallery | 6 built-in programs — `Ctrl+E` |
+| Console / LLVM IR tabs | View output or generated IR side by side |
 | File management | New, Open, Save, Recent Files |
-| Find | `Ctrl+F` |
-| Font zoom | `Ctrl+` / `Ctrl-` |
 
 ### Keyboard Shortcuts
 
@@ -244,59 +252,80 @@ python Ide.py
 
 ---
 
-## How It Works
+## ⚙️ How It Works
 
 ```
 source.nova
     │
     ▼
- Lexer (rply)         — tokenizes the source text
+ Lexer (rply)         tokenizes the source text
     │
     ▼
- Parser (rply)         — builds AST nodes per grammar rules
+ Parser (rply)        builds AST nodes per grammar rules
     │
     ▼
- AST nodes (.eval())   — each node emits LLVM IR via llvmlite
+ AST nodes (.eval())  each node emits LLVM IR via llvmlite
     │
     ▼
- CodeGen               — wraps IR in an LLVM module, verifies it
+ CodeGen              wraps IR in an LLVM module, verifies it
     │
     ▼
- output.ll             — LLVM IR, ready for JIT or llc/clang
+ output.ll            LLVM IR — ready for JIT or llc/clang
 ```
 
-### Why deferred evaluation matters
+<details>
+<summary><b>Why deferred evaluation matters</b></summary>
+<br>
 
-AST nodes store their children as unevaluated objects rather than calling `.eval()` immediately. This means a `while` loop can position the LLVM builder inside the correct basic block (`while_header`, `while_body`, `while_exit`) *before* evaluating the condition or body — which is what makes loops behave correctly instead of running forever or emitting IR in the wrong place.
+AST nodes store their children as unevaluated objects rather than calling `.eval()` immediately. This lets a `while` loop position the LLVM builder inside the correct basic block (`while_header`, `while_body`, `while_exit`) *before* evaluating the condition or body — which is what makes loops behave correctly instead of running forever or emitting IR in the wrong place.
+</details>
 
-### What is LLVM?
+<details>
+<summary><b>What is LLVM?</b></summary>
+<br>
 
-LLVM is a compiler backend toolkit. Instead of writing a custom machine-code generator, NovaLang compiles to LLVM's intermediate representation (IR) — the same IR used by Clang/C++, Rust, and Swift — and lets LLVM (or `llvmlite`'s JIT) handle the rest.
+LLVM is a compiler backend toolkit. Instead of writing a custom machine-code generator, NovaLang compiles to LLVM's intermediate representation — the same IR used by Clang/C++, Rust, and Swift — and lets LLVM (or `llvmlite`'s JIT) handle the rest.
+</details>
 
 ---
 
-## Known Limitations
+## ⚠️ Known Limitations
 
 - No user-defined functions yet
 - No arrays
 - Single-file programs only (no imports/modules)
-- One statement per top-level chunk in `main.py`'s parser loop
 
 ---
 
-## Roadmap
+## 🗺 Roadmap
 
-| Feature | Difficulty |
-|---|---|
-| `for` loop | Easy |
-| `return` statement | Easy |
-| User-defined functions | Medium |
-| Arrays | Medium |
-| Type inference | Hard |
-| Standard library | Hard |
+- [ ] `for` loop
+- [ ] `return` statement
+- [ ] User-defined functions
+- [ ] Arrays
+- [ ] Type inference
+- [ ] Standard library
 
 ---
 
-## License
+## 🤝 Contributing
 
-See `LICENSE`.
+Contributions are welcome! Feel free to open an issue or submit a pull request.
+
+1. Fork the repo
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+
+
+---
+
+<div align="center">
+
+Made with 🐍 Python · ⚡ LLVM
+
+</div>
